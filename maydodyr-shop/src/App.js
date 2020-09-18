@@ -1,30 +1,23 @@
 import React from "react";
+import ReactDOM from "react-dom";
+import { BrowserRouter } from "react-router-dom";
+import { Container } from "semantic-ui-react";
 import "./App.css";
 
-import { connect } from "react-redux";
+import PagesRouter from "./pages/PagesRouter";
+import HeadMenu from "./components/HeadMenu";
 
-import { set_catalog, add_item } from "./redux/actions/catalog";
+
 
 class App extends React.PureComponent {
-  componentDidMount() {
-    let newItem = {
-      id: 1,
-      name: "Средство для мытья поверхностей",
-      producer: "NovelHim",
-      section: "surface",
-    };
-    this.props.dispatch(set_catalog(newItem));
-  }
-
   render() {
-    let catalog = this.props.catalog;
-    console.log(this.props.catalog);
-    return <h1>fhj</h1>;
+    return (
+      <Container>
+        <HeadMenu />
+        <PagesRouter />
+      </Container>
+    );
   }
 }
 
-const mapStateToProps = (state) => ({
-  catalog: state.catalog,
-});
-
-export default connect(mapStateToProps)(App);
+export default App;

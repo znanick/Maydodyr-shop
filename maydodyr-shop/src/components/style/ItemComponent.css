@@ -1,0 +1,40 @@
+.ui.items > .item {
+  width: 80%;
+  margin: 2rem auto;
+}
+
+.ui.tiny.image {
+  width: 120px;
+}
+
+.ui.items>.item>.image+.content{
+  margin-top: 1.2em;
+}
+
+.ui.items > .item > .content > .description {
+  font-size: 1.1em;
+}
+
+.ui.items>.item>.content>.header:not(.ui){
+  font-size: 1.4em;
+}
+
+.buyBlock{
+  
+  margin: 2.5em 1em;
+  
+}
+
+.cart {
+  
+  width: 3rem;
+  
+  -webkit-transition: -webkit-transform .6s ease-in-out;
+          transition:         transform .6s ease-in-out;
+}
+.cart:hover {
+  
+  cursor: pointer;
+  -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+}

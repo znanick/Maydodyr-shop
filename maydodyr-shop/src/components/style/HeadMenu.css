@@ -1,0 +1,17 @@
+.ui.segment{
+  padding: 0;
+}
+
+.catalogMenuContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  height: 3rem;
+}
+
+.catalogMenuItem{
+  border-right: 1px solid rgba(34,36,38,.15);
+  width: 100%;
+  text-align: center;
+  line-height: 3rem;
+}

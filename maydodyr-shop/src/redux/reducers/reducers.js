@@ -1,9 +1,11 @@
 import { combineReducers } from "redux";
 
 import catalogReducer from "./catalog";
+import sortReducer from "./sort";
 
 let combinedReducer = combineReducers({
-  catalog:catalogReducer,
+  itemsCatalog: catalogReducer,
+  sort: sortReducer,
 });
 
 export default combinedReducer;
