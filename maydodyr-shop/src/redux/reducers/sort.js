@@ -1,8 +1,9 @@
-import { SET_QUERY, SET_FILTER } from "../actions/sort";
+import { SET_QUERY, SET_FILTER, SET_SECTION } from "../actions/sort";
 
 const initialState = {
   searchQuery: "",
   filterBy: "all",
+  section: "",
 };
 
 function sortReducer(state = initialState, action) {
@@ -16,6 +17,11 @@ function sortReducer(state = initialState, action) {
       return {
         ...state,
         filterBy: action.filter,
+      };
+    case SET_SECTION:
+      return {
+        ...state,
+        section: action.section,
       };
     default:
       return state;

@@ -1,15 +1,26 @@
-import { SET_CATALOG, ADD_ITEM, SET_IS_READY } from "../actions/catalog";
+import {
+  SET_CATALOG,
+  SAVE_LAST_PAGE,
+  SET_IS_READY,
+  SET_CURRENT_PAGE,
+} from "../actions/catalog";
 
 const initialState = {
   isReady: false,
   catalog: null,
-  
+  lastVisitedPage: "/",
+  pageSize: 10,
+  totalUserCount: 25,
+  currentPage: 1,
 };
 
 function catalogReducer(state = initialState, action) {
   switch (action.type) {
-    case ADD_ITEM:
-      return {};
+    case SAVE_LAST_PAGE:
+      return {
+        ...state,
+        lastVisitedPage: action.url,
+      };
     case SET_CATALOG:
       let newState = {
         ...state,
@@ -22,6 +33,11 @@ function catalogReducer(state = initialState, action) {
       return {
         ...state,
         isReady: action.status,
+      };
+    case SET_CURRENT_PAGE:
+      return {
+        ...state,
+        currentPage: action.page,
       };
     default:
       return state;

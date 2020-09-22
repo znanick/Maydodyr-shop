@@ -1,25 +1,30 @@
 import React from "react";
 import { Item } from "semantic-ui-react";
-import './style/ItemComponent.css'
+import { NavLink } from "react-router-dom";
+import "./style/ItemComponent.css";
 
 class ItemComponent extends React.PureComponent {
   render() {
     const { item } = this.props;
     return (
-      <Item>
-        <Item.Image size="tiny" src={item.imgUrl} />
-
-        <Item.Content>
-          <Item.Header as="a">{item.name}</Item.Header>
+      <div className='itemComponent'>
+        <NavLink to={"/catalog/item/" + item.id} exact className='itemBlock'>
+          <img className='itemComponentImg' src={item.imgUrl} />
+        
+        <div className='infoBlock'>
+          <h2 as="a">{item.name}</h2>
           <Item.Meta></Item.Meta>
-          <Item.Description>{item.description.substr(0, 130)}</Item.Description>
-          <Item.Extra>{item.price + " $"}</Item.Extra>
-        </Item.Content>
+          <p>
+            {item.description.substr(0, 130) + "..."}
+          </p>
+          <Item.Extra>{item.producer}</Item.Extra>
+        </div>
+        </NavLink>
         <div className="buyBlock">
           <b>{item.price + " $"}</b>
-          <img className="cart" src="cart.png" alt={item.name} />
+          <img className="cart" src="/cart.png" alt={item.name} />
         </div>
-      </Item>
+      </div>
     );
   }
 }
