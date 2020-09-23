@@ -10,6 +10,7 @@ import {
   set_catalog,
   add_item,
   set_current_page,
+  set_length,
 } from "../redux/actions/catalog";
 import { set_section } from "../redux/actions/sort";
 
@@ -38,19 +39,34 @@ class Catalog extends React.PureComponent {
     );
   }
 
-  loadData = (pageNumber = this.props.itemsCatalog.currentPage) => {
+  loadData = (
+    filterBy = this.props.sort.filterBy,
+    searchQuery = this.props.sort.searchQuery,
+    pageNumber = this.props.itemsCatalog.currentPage
+  ) => {
     let section = this.props.sort.section
       ? "section=" + this.props.sort.section
       : "";
-    this.dataRequest(section, pageNumber);
+
+    var filter = "";
+    if (filterBy != "all") {
+      if (filterBy == "priceHight") {
+        filter = "_sort=price&_order=desc";
+      } else if (filterBy == "priceLow") {
+        filter = "_sort=price&_order=asc";
+      }
+    }
+    var search = searchQuery ? searchQuery : "";
+    this.dataRequest(section, search, filter, pageNumber);
+    this.dataLengthRequest(section, search);
   };
 
   fetchError = (errorMessage) => {
     console.error(errorMessage);
   };
-  dataRequest = (section, pageNumber) => {
+  dataRequest = (section, search, filter, pageNumber) => {
     isoFetch(
-      `http://localhost:3004/itemCatalog?${section}&_page=${pageNumber}&_limit=${this.props.itemsCatalog.pageSize}`,
+      `http://localhost:3004/itemCatalog?${section}&name_like=${search}&${filter}&_page=${pageNumber}&_limit=${this.props.itemsCatalog.pageSize}`,
       {
         method: "get",
         headers: {
@@ -69,15 +85,26 @@ class Catalog extends React.PureComponent {
         this.fetchError(error.message);
       });
   };
-
-  filterCatalog = (filterBy, oldCatalog) => {
-    if (filterBy == "priceLow") {
-      return orderBy(oldCatalog, "price", "asc");
-    } else if (filterBy == "priceHight") {
-      return orderBy(oldCatalog, "price", "desc");
-    } else {
-      return oldCatalog;
-    }
+  dataLengthRequest = (section, search) => {
+    isoFetch(
+      `http://localhost:3004/itemCatalog?${section}&name_like=${search}`,
+      {
+        method: "get",
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    )
+      .then((response) => {
+        if (!response.ok) throw new Error("fetch error " + response.status);
+        else return response.json();
+      })
+      .then((data) => {
+        this.props.dispatch(set_length(data.length));
+      })
+      .catch((error) => {
+        this.fetchError(error.message);
+      });
   };
 
   search = (searchQuery, catalog) =>
@@ -90,7 +117,11 @@ class Catalog extends React.PureComponent {
 
   onPageChange = (pageNumber) => {
     this.props.dispatch(set_current_page(pageNumber));
-    this.loadData(pageNumber);
+    this.loadData(
+      this.props.sort.filterBy,
+      this.props.sort.searchQuery,
+      pageNumber
+    );
   };
 
   render() {
@@ -101,6 +132,7 @@ class Catalog extends React.PureComponent {
       pageSize,
       totalUserCount,
       currentPage,
+      totalUserCountIsReady,
     } = this.props.itemsCatalog;
     const { searchQuery, filterBy, section } = this.props.sort;
 
@@ -119,17 +151,19 @@ class Catalog extends React.PureComponent {
       );
     }
 
-    var code = !isReady
-      ? "Loading..."
-      : this.filterCatalog(
-          filterBy,
-          this.search(searchQuery, catalog)
-        ).map((item) => <ItemComponent key={item.id} item={item} />);
+    var code =
+      !isReady && !totalUserCountIsReady
+        ? "Loading..."
+        : catalog.map((item) => <ItemComponent key={item.id} item={item} />);
 
     return (
       <Container>
         <Item.Group>
-          <Sort activeItem="all" activeSection="all" />
+          <Sort
+            activeItem="all"
+            activeSection="all"
+            cbLoadData={this.loadData}
+          />
           {pagination}
           {code.length == 0 ? "Ничего не найдено" : code}
         </Item.Group>

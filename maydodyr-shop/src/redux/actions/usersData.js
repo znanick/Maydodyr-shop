@@ -15,10 +15,10 @@ const logout = function () {
   };
 };
 
-const login = function (userId) {
+const login = function (userData) {
   return {
     type: LOGIN,
-    userId: userId,
+    userData: userData,
   };
 };
 

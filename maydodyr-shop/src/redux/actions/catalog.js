@@ -1,7 +1,8 @@
 const SAVE_LAST_PAGE = "SAVE_LAST_PAGE";
 const SET_CATALOG = "SET_CATALOG";
-const SET_IS_READY = "SET_IS_READY";
 const SET_CURRENT_PAGE = "SET_CURRENT_PAGE";
+const SET_ITEM = "SET_ITEM";
+const SET_LENGTH = "SET_LENGTH";
 
 const save_last_page = function (url) {
   return {
@@ -24,8 +25,18 @@ const set_current_page = function (page) {
   };
 };
 
-const set_is_ready = function (status) {
-  return {};
+const set_item = function (item) {
+  return {
+    type: SET_ITEM,
+    item: item,
+  };
+};
+
+const set_length = function (length) {
+  return {
+    type: SET_LENGTH,
+    length: length,
+  };
 };
 
 export {
@@ -33,8 +44,10 @@ export {
   SET_CATALOG,
   save_last_page,
   SAVE_LAST_PAGE,
-  set_is_ready,
-  SET_IS_READY,
   set_current_page,
   SET_CURRENT_PAGE,
+  set_item,
+  SET_ITEM,
+  set_length,
+  SET_LENGTH
 };

@@ -65,15 +65,17 @@ class Login extends React.PureComponent {
   login = () => {
     const { usersData } = this.props.usersData;
     var isPassed = false;
+    var userData = {};
     usersData.forEach((el) => {
       if (el.id == this.state.loginValue) {
         if (el.password == this.state.passwordValue) {
           isPassed = true;
+          userData = { isAdmin: el.isAdmin, id: el.id };
         }
       }
     });
     if (isPassed) {
-      this.props.dispatch(login(this.state.loginValue));
+      this.props.dispatch(login(userData));
       this.props.history.push(this.props.itemsCatalog.lastVisitedPage);
     } else {
       this.setState({
@@ -179,9 +181,9 @@ class Login extends React.PureComponent {
       //Регистрация
       <div>
         <div className="container">
-          <label for="uname">
+          
             <b>Логин</b>
-          </label>
+          
           <input
             type="text"
             placeholder={
@@ -262,9 +264,9 @@ class Login extends React.PureComponent {
       //Вход
       <div>
         <div className="container">
-          <label for="uname">
+          
             <b>Логин</b>
-          </label>
+          
           <input
             type="text"
             className={this.state.checkDataStatus ? "inputOk" : "inputErr"}

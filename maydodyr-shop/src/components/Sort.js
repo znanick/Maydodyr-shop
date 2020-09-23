@@ -12,6 +12,11 @@ class Sort extends React.PureComponent {
   };
 
   handleItemClick = (e, { name }) => {
+    this.props.cbLoadData(
+      name,
+      this.props.sort.searchQuery,
+      this.props.itemsCatalog.currentPage
+    );
     this.setState({ activeItem: name });
     this.props.dispatch(set_filter(name));
   };
@@ -42,15 +47,17 @@ class Sort extends React.PureComponent {
         >
           С дорогих
         </Menu.Item>
-        <Menu.Item
-          name="search"
-          
-        >
+        <Menu.Item name="search">
           <Input
             icon="search"
             placeholder="Поиск"
             value={this.props.sort.searchQuery}
             onChange={(EO) => {
+              this.props.cbLoadData(
+                this.props.sort.searchQuery.filterBy,
+                EO.target.value,
+                this.props.itemsCatalog.currentPage
+              );
               this.props.dispatch(set_query(EO.target.value));
             }}
           />
@@ -62,6 +69,7 @@ class Sort extends React.PureComponent {
 
 const mapStateToProps = (state) => ({
   sort: state.sort,
+  itemsCatalog: state.itemsCatalog,
 });
 
 export default connect(mapStateToProps)(Sort);

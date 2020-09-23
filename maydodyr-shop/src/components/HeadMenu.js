@@ -48,6 +48,7 @@ class HeadMenu extends React.Component {
       })
       .then((data) => {
         this.props.dispatch(set_catalog(data));
+        
       })
       .catch((error) => {
         this.fetchError(error.message);
@@ -60,12 +61,16 @@ class HeadMenu extends React.Component {
 
   render() {
     const { activeItem } = this.state;
+    const { isActiveUserAdmin } = this.props.usersData;
+
+    
     var catalogMenu = (
       <Segment>
         <div className="catalogMenuContainer">
           <NavLink
             to="/catalog"
             exact
+            activeClassName="activate"
             className="catalogMenuItem"
             onClick={() => {
               this.reloadData("");
@@ -75,6 +80,7 @@ class HeadMenu extends React.Component {
           </NavLink>
           <NavLink
             to="/catalog/washing"
+            activeClassName="activate"
             className="catalogMenuItem"
             onClick={() => {
               this.reloadData("section=washing");
@@ -84,6 +90,7 @@ class HeadMenu extends React.Component {
           </NavLink>
           <NavLink
             to="/catalog/cleaning"
+            activeClassName="activate"
             className="catalogMenuItem"
             onClick={() => {
               this.reloadData("section=cleaning");
@@ -93,6 +100,7 @@ class HeadMenu extends React.Component {
           </NavLink>
           <NavLink
             to="/catalog/sponges"
+            activeClassName="activate"
             className="catalogMenuItem"
             onClick={() => {
               this.reloadData("section=sponges");
@@ -102,6 +110,7 @@ class HeadMenu extends React.Component {
           </NavLink>
           <NavLink
             to="/catalog/napkins"
+            activeClassName="activate"
             className="catalogMenuItem"
             onClick={() => {
               this.reloadData("section=napkins");
@@ -122,7 +131,7 @@ class HeadMenu extends React.Component {
             active={activeItem === "Домой"}
             onClick={this.handleItemClick}
           >
-            <NavLink to="/" exact>
+            <NavLink to="/" activeClassName="activate" exact>
               Домой
             </NavLink>
           </Menu.Item>
@@ -136,7 +145,13 @@ class HeadMenu extends React.Component {
           />
           <Menu.Menu position="right">
             <Menu.Item>
-              <Input icon="search" placeholder="Search..." />
+              {isActiveUserAdmin ? (
+                <NavLink activeClassName="activate" to="/addItem">
+                  Добавить товар
+                </NavLink>
+              ) : (
+                "cart"
+              )}
             </Menu.Item>
             <Menu.Item
               name="Войти"

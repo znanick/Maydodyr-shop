@@ -1,4 +1,4 @@
-.ui.segment{
+.ui.segment {
   padding: 0;
 }
 
@@ -9,9 +9,17 @@
   height: 3rem;
 }
 
-.catalogMenuItem{
-  border-right: 1px solid rgba(34,36,38,.15);
+.catalogMenuItem {
+  border-right: 1px solid rgba(34, 36, 38, 0.15);
   width: 100%;
   text-align: center;
   line-height: 3rem;
+}
+
+.catalogMenuItem:hover {
+  background-color: rgba(34, 36, 38, 0.15);
+}
+
+.activate {
+  background-color: rgba(34, 36, 38, 0.15);
 }
