@@ -1,64 +1,66 @@
 import React from "react";
 import isoFetch from "isomorphic-fetch";
-import { Container, Card, Item, Image } from "semantic-ui-react";
-import orderBy from "lodash/orderBy";
+import { Container, Item } from "semantic-ui-react";
+import { reloadData } from "./events";
+
 import "./style/Catalog.css";
 
 import { connect } from "react-redux";
 
 import {
   set_catalog,
-  add_item,
   set_current_page,
   set_length,
 } from "../redux/actions/catalog";
-import { set_section } from "../redux/actions/sort";
 
 import ItemComponent from "./ItemComponent";
 import Sort from "./Sort";
 
 class Catalog extends React.PureComponent {
   componentDidMount() {
+    
     this.loadData();
     window.addEventListener(
       "popstate",
-
       this.loadData,
       false
     );
+    reloadData.addListener("reloadData", this.loadData);
   }
 
   componentWillUnmount() {
     console.log("");
     window.removeEventListener(
       "popstate",
-
       this.loadData,
-
       false
     );
+    reloadData.removeListener("reloadData", this.loadData);
   }
+
+  
 
   loadData = (
     filterBy = this.props.sort.filterBy,
     searchQuery = this.props.sort.searchQuery,
-    pageNumber = this.props.itemsCatalog.currentPage
+    pageNumber = this.props.itemsCatalog.currentPage,
+    section = this.props.sort.section
   ) => {
-    let section = this.props.sort.section
-      ? "section=" + this.props.sort.section
+    let newSection = section
+      ? "section=" + section
       : "";
 
     var filter = "";
-    if (filterBy != "all") {
-      if (filterBy == "priceHight") {
+    if (filterBy !== "all") {
+      if (filterBy === "priceHight") {
         filter = "_sort=price&_order=desc";
-      } else if (filterBy == "priceLow") {
+      } else if (filterBy === "priceLow") {
         filter = "_sort=price&_order=asc";
       }
     }
     var search = searchQuery ? searchQuery : "";
-    this.dataRequest(section, search, filter, pageNumber);
-    this.dataLengthRequest(section, search);
+    this.dataRequest(newSection, search, filter, pageNumber);
+    this.dataLengthRequest(newSection, search);
   };
 
   fetchError = (errorMessage) => {
@@ -127,21 +129,21 @@ class Catalog extends React.PureComponent {
   render() {
     const {
       isReady,
-      sortSelectors,
+
       catalog,
       pageSize,
       totalUserCount,
       currentPage,
       totalUserCountIsReady,
     } = this.props.itemsCatalog;
-    const { searchQuery, filterBy, section } = this.props.sort;
 
     let pagesCount = Math.ceil(totalUserCount / pageSize);
     let pagination = [];
     for (let i = 1; i <= pagesCount; i++) {
       pagination.push(
         <span
-          className={currentPage === i && "selectPagination"}
+          key={i}
+          className={currentPage === i ? "selectPagination" : undefined}
           onClick={() => {
             this.onPageChange(i);
           }}
@@ -165,7 +167,7 @@ class Catalog extends React.PureComponent {
             cbLoadData={this.loadData}
           />
           {pagination}
-          {code.length == 0 ? "Ничего не найдено" : code}
+          {code.length === 0 ? "Ничего не найдено" : code}
         </Item.Group>
       </Container>
     );

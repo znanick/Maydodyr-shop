@@ -3,11 +3,7 @@ import { connect } from "react-redux";
 import isoFetch from "isomorphic-fetch";
 
 import "./style/AddItem.css";
-import {
-  set_catalog,
-  add_item,
-  set_current_page,
-} from "../redux/actions/catalog";
+import { set_catalog } from "../redux/actions/catalog";
 
 class AddItem extends React.PureComponent {
   state = {
@@ -53,17 +49,17 @@ class AddItem extends React.PureComponent {
   };
 
   changeInput = (EO, inp) => {
-    if (inp == "name") {
+    if (inp === "name") {
       this.setState({ name: EO.target.value, isNameValid: true });
-    } else if (inp == "producer") {
+    } else if (inp === "producer") {
       this.setState({ producer: EO.target.value, isProducerValid: true });
-    } else if (inp == "imgUrl") {
+    } else if (inp === "imgUrl") {
       this.setState({ imgUrl: EO.target.value, isImgUrlValid: true });
-    } else if (inp == "description") {
+    } else if (inp === "description") {
       this.setState({ description: EO.target.value, isDescriptionValid: true });
-    } else if (inp == "price") {
+    } else if (inp === "price") {
       this.setState({ price: EO.target.value, isPriceValid: true });
-    } else if (inp == "section") {
+    } else if (inp === "section") {
       this.setState({ section: EO.target.value, isSectionValid: true });
     }
   };
@@ -140,7 +136,7 @@ class AddItem extends React.PureComponent {
         section: section,
         price: price,
       };
-      this.postData(newItem)
+      this.postData(newItem);
     } else {
       this.setState({
         name: name,
@@ -171,11 +167,8 @@ class AddItem extends React.PureComponent {
   render() {
     const {
       isReady,
-      sortSelectors,
+
       catalog,
-      pageSize,
-      totalUserCount,
-      currentPage,
     } = this.props.itemsCatalog;
 
     if (isReady) {

@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { Route, Redirect } from "react-router-dom";
 
 import MainPage from "../components/MainPage";
-import Catalog from "../components/Catalog";
 import PageItem from "./PageItem";
 import Login from "../components/Login";
 import PageSection from "./PageSection";

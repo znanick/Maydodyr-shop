@@ -6,6 +6,7 @@ import { withRouter } from "react-router";
 import "./style/Login.css";
 
 import { set_userData, login } from "../redux/actions/usersData";
+import {  add_item } from "../redux/actions/cart";
 
 class Login extends React.PureComponent {
   state = {
@@ -67,15 +68,16 @@ class Login extends React.PureComponent {
     var isPassed = false;
     var userData = {};
     usersData.forEach((el) => {
-      if (el.id == this.state.loginValue) {
-        if (el.password == this.state.passwordValue) {
+      if (el.id === this.state.loginValue) {
+        if (el.password === this.state.passwordValue) {
           isPassed = true;
-          userData = { isAdmin: el.isAdmin, id: el.id };
+          userData = el;
         }
       }
     });
     if (isPassed) {
       this.props.dispatch(login(userData));
+      this.props.dispatch(add_item(userData.cart));
       this.props.history.push(this.props.itemsCatalog.lastVisitedPage);
     } else {
       this.setState({
@@ -108,7 +110,7 @@ class Login extends React.PureComponent {
   };
   changePasswordRepeatRegister = (EO) => {
     let valid =
-      EO.target.value == this.state.passwordRegisterValue ? true : false;
+      EO.target.value === this.state.passwordRegisterValue ? true : false;
     this.setState({
       passwordRepeatRegisterValue: EO.target.value,
       passwordRepeatRegisterValid: valid,
@@ -121,7 +123,7 @@ class Login extends React.PureComponent {
 
     var passwordValid = true;
 
-    const { usersData } = this.props.usersData;
+    
     var regExp = /^[a-zA-Z0-9]+$/;
 
     //login
@@ -133,7 +135,7 @@ class Login extends React.PureComponent {
       loginErr = "Логин должен содержать не менее 5 символов";
     } else {
       this.props.usersData.usersData.forEach((el) => {
-        if (el.id == this.state.loginRegisterValue) {
+        if (el.id === this.state.loginRegisterValue) {
           loginValid = false;
           loginErr = "Логин уже используется";
         }
@@ -150,6 +152,7 @@ class Login extends React.PureComponent {
         isAdmin: false,
         id: this.state.loginRegisterValue,
         password: this.state.passwordRegisterValue,
+        cart: []
       };
       isoFetch("http://localhost:3004/usersData", {
         method: "POST",
@@ -181,9 +184,8 @@ class Login extends React.PureComponent {
       //Регистрация
       <div>
         <div className="container">
-          
-            <b>Логин</b>
-          
+          <b>Логин</b>
+
           <input
             type="text"
             placeholder={
@@ -264,9 +266,8 @@ class Login extends React.PureComponent {
       //Вход
       <div>
         <div className="container">
-          
-            <b>Логин</b>
-          
+          <b>Логин</b>
+
           <input
             type="text"
             className={this.state.checkDataStatus ? "inputOk" : "inputErr"}
@@ -330,6 +331,7 @@ class Login extends React.PureComponent {
 const mapStateToProps = (state) => ({
   itemsCatalog: state.itemsCatalog,
   usersData: state.usersData,
+  cart: state.cart
 });
 
 export default connect(mapStateToProps)(withRouter(Login));

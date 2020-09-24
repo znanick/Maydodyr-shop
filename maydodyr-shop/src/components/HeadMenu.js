@@ -1,17 +1,43 @@
 import React from "react";
-import { Input, Menu, Segment } from "semantic-ui-react";
+import { Menu, Segment, Button, List, Image, Popup } from "semantic-ui-react";
 import "./style/HeadMenu.css";
+import isoFetch from "isomorphic-fetch";
 import { NavLink } from "react-router-dom";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { logout } from "../redux/actions/usersData";
-import { save_last_page } from "../redux/actions/catalog";
-import { set_section } from "../redux/actions/sort";
-import isoFetch from "isomorphic-fetch";
-import { set_catalog, add_item } from "../redux/actions/catalog";
+import { save_last_page, set_current_page } from "../redux/actions/catalog";
+import { load_items, add_item } from "../redux/actions/cart";
+
+import { reloadData } from "./events";
 
 class HeadMenu extends React.Component {
   state = { activeItem: "home", isCatalogMenuActive: false };
+
+  componentWillUnmount() {
+    
+    if (this.props.usersData.activeUser) {
+      this.saveUsersCart();
+      
+    }
+  }
+
+  saveUsersCart = () => {
+    var newData = {
+      ...this.props.usersData.activeUser,
+      cart: this.props.cart.itemsId,
+    };
+    isoFetch(
+      `http://localhost:3004/usersData/${this.props.usersData.activeUser.id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newData),
+      }
+    );
+  };
 
   handleItemClick = (e, { name }) =>
     this.setState({ activeItem: name, isCatalogMenuActive: false });
@@ -25,6 +51,7 @@ class HeadMenu extends React.Component {
 
   userData = (isUserLogin, name) => {
     if (isUserLogin) {
+      this.saveUsersCart();
       this.props.dispatch(logout());
     } else if (!isUserLogin) {
       this.props.dispatch(save_last_page(this.props.location.pathname));
@@ -36,7 +63,30 @@ class HeadMenu extends React.Component {
   };
 
   reloadData = (section) => {
-    isoFetch(`http://localhost:3004/itemCatalog?${section}`, {
+    this.props.dispatch(set_current_page(1));
+    reloadData.emit(
+      "reloadData",
+      this.props.sort.filterBy,
+      this.props.sort.searchQuery,
+      this.props.itemsCatalog.currentPage,
+      section
+    );
+  };
+
+  fetchError = (errorMessage) => {
+    console.error(errorMessage);
+  };
+
+  loadCartsItems = (id) => {
+    if (id.length) {
+      var result = id.reduce(function (res, id) {
+        return res + `&id=${id}`;
+      }, "");
+      this.cartRequest(result);
+    }
+  };
+  cartRequest = (result) => {
+    isoFetch(`http://localhost:3004/itemCatalog?${result}`, {
       method: "get",
       headers: {
         Accept: "application/json",
@@ -47,23 +97,18 @@ class HeadMenu extends React.Component {
         else return response.json();
       })
       .then((data) => {
-        this.props.dispatch(set_catalog(data));
-        
+        this.props.dispatch(load_items(data));
       })
       .catch((error) => {
         this.fetchError(error.message);
       });
   };
 
-  fetchError = (errorMessage) => {
-    console.error(errorMessage);
-  };
-
   render() {
     const { activeItem } = this.state;
-    const { isActiveUserAdmin } = this.props.usersData;
+    const { isActiveUserAdmin, activeUser } = this.props.usersData;
+    const { items, itemsId, isItemsReady, isItemsIdReady } = this.props.cart;
 
-    
     var catalogMenu = (
       <Segment>
         <div className="catalogMenuContainer">
@@ -83,7 +128,7 @@ class HeadMenu extends React.Component {
             activeClassName="activate"
             className="catalogMenuItem"
             onClick={() => {
-              this.reloadData("section=washing");
+              this.reloadData("washing");
             }}
           >
             <b>Стирка</b>
@@ -93,7 +138,7 @@ class HeadMenu extends React.Component {
             activeClassName="activate"
             className="catalogMenuItem"
             onClick={() => {
-              this.reloadData("section=cleaning");
+              this.reloadData("cleaning");
             }}
           >
             <b>Уборка</b>
@@ -103,7 +148,7 @@ class HeadMenu extends React.Component {
             activeClassName="activate"
             className="catalogMenuItem"
             onClick={() => {
-              this.reloadData("section=sponges");
+              this.reloadData("sponges");
             }}
           >
             <b>Губки</b>
@@ -113,7 +158,7 @@ class HeadMenu extends React.Component {
             activeClassName="activate"
             className="catalogMenuItem"
             onClick={() => {
-              this.reloadData("section=napkins");
+              this.reloadData("napkins");
             }}
           >
             <b>Тряпки</b>
@@ -121,8 +166,29 @@ class HeadMenu extends React.Component {
         </div>
       </Segment>
     );
+    var cartCode;
+    if (isItemsReady && isItemsIdReady) {
+      cartCode = items.length
+        ? items.map((item) => (
+            <List selection divided verticalAlign="middle">
+              <List.Item>
+                <List.Content floated="right">
+                  <Image avatar src={"/delete.png"} className="deleteBut" />
+                </List.Content>
+                <Image avatar src={item.imgUrl} />
+                <List.Content>{item.name}</List.Content>
+              </List.Item>
+            </List>
+          ))
+       
+          
+        : "Корзина пуста";
+    } else {
+      cartCode = "Загрузка..";
+    }
 
-    const { activeUserId } = this.props.usersData;
+    var totalCost = 0
+    
     return (
       <div>
         <Menu secondary>
@@ -150,17 +216,31 @@ class HeadMenu extends React.Component {
                   Добавить товар
                 </NavLink>
               ) : (
-                "cart"
+                <Popup
+                  trigger={
+                    <Menu.Item
+                      name="help"
+                      onClick={() => {
+                        this.loadCartsItems(itemsId);
+                      }}
+                    >
+                      Корзина
+                    </Menu.Item>
+                  }
+                  content={cartCode}
+                  on="click"
+                  hideOnScroll
+                />
               )}
             </Menu.Item>
             <Menu.Item
               name="Войти"
               active={activeItem === "Войти"}
               onClick={() => {
-                this.userData(activeUserId, "Войти");
+                this.userData(activeUser, "Войти");
               }}
             >
-              {activeUserId ? "Выйти" : "Войти"}
+              {activeUser ? "Выйти" : "Войти"}
             </Menu.Item>
           </Menu.Menu>
         </Menu>
@@ -172,6 +252,9 @@ class HeadMenu extends React.Component {
 
 const mapStateToProps = (state) => ({
   usersData: state.usersData,
+  itemsCatalog: state.itemsCatalog,
+  sort: state.sort,
+  cart: state.cart,
 });
 
 export default connect(mapStateToProps)(withRouter(HeadMenu));

@@ -3,9 +3,9 @@ import { connect } from "react-redux";
 import isoFetch from "isomorphic-fetch";
 
 import {
-  set_catalog,
+  
   set_item,
-  set_current_page,
+  
 } from "../redux/actions/catalog";
 import ItemInfo from "../components/ItemInfo";
 
@@ -42,7 +42,7 @@ class PageItem extends React.PureComponent {
 
   render() {
     const { choosenItemIsReady, choosenItem } = this.props.itemsCatalog;
-    let ItemId = parseInt(this.props.match.params.id);
+    
 
     return !choosenItemIsReady ? (
       "Loading..."

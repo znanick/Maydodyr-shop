@@ -3,8 +3,8 @@ import { SET_USERSDATA, LOGOUT, LOGIN } from "../actions/usersData";
 const initialState = {
   usersData: null,
   isReady: false,
-  activeUserId: "admin",
-  isActiveUserAdmin: true,
+  activeUser: null,
+  isActiveUserAdmin: false,
 };
 
 function usersReducer(state = initialState, action) {
@@ -20,12 +20,12 @@ function usersReducer(state = initialState, action) {
       return {
         ...state,
         isActiveUserAdmin: false,
-        activeUserId: "",
+        activeUser: null,
       };
     case LOGIN:
       return {
         ...state,
-        activeUserId: action.userData.id,
+        activeUser: action.userData,
         isActiveUserAdmin: action.userData.isAdmin,
       };
     default:

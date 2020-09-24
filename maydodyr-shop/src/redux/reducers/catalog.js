@@ -1,7 +1,6 @@
 import {
   SET_CATALOG,
   SAVE_LAST_PAGE,
-  SET_IS_READY,
   SET_CURRENT_PAGE,
   SET_ITEM,
   SET_LENGTH,
@@ -49,7 +48,7 @@ function catalogReducer(state = initialState, action) {
       return {
         ...state,
         totalUserCount: action.length,
-        totalUserCountIsReady:true
+        totalUserCountIsReady: true,
       };
     default:
       return state;
