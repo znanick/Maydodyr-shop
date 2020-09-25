@@ -22,7 +22,7 @@ class ItemInfo extends React.PureComponent {
       <div className="itemInfoContainer">
         <h1 className="name">{info.name}</h1>
         <div className="leftContainer">
-          <img className="itemsImg" src={info.imgUrl}></img>
+          <img className="itemsImg" src={info.imgUrl} alt={info.name}></img>
         </div>
         <div className="rightContainer">
           <p className="description">{info.description}</p>
