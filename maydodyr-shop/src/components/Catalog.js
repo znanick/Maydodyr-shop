@@ -143,7 +143,7 @@ class Catalog extends React.PureComponent {
       pagination.push(
         <span
           key={i}
-          className={currentPage === i ? "selectPagination" : undefined}
+          className={currentPage === i ? "selectPagination" : 'pagination'}
           onClick={() => {
             this.onPageChange(i);
           }}
@@ -166,7 +166,9 @@ class Catalog extends React.PureComponent {
             activeSection="all"
             cbLoadData={this.loadData}
           />
+          <div className='paginationList'>
           {pagination}
+          </div>
           {code.length === 0 ? "Ничего не найдено" : code}
         </Item.Group>
       </Container>

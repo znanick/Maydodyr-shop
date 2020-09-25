@@ -9,7 +9,12 @@
   height: 3rem;
 }
 
-.catalogMenuItem {
+.ui.secondary.menu .item{
+  font-size: 1.2rem;
+}
+
+.catalogMenuItem,
+.activateCatalogMenuItem {
   border-right: 1px solid rgba(34, 36, 38, 0.15);
   width: 100%;
   text-align: center;
@@ -20,7 +25,37 @@
   background-color: rgba(34, 36, 38, 0.15);
 }
 
+.activateCatalogMenuItem {
+  background-color: rgba(34, 36, 38, 0.15);
+}
+
+.headMenuItem,
 .activate {
+  font-size: 1.2rem;
+  color: black;
+  align-self: center;
+  box-shadow: none;
+  border: none;
+  padding: 0.78571429em 0.92857143em;
+  margin: 0 0.35714286em;
+  background: 0 0;
+  transition: color 0.1s ease;
+  transition: background-color 0.8s ease;
+  border-radius: 0.28571429rem;
+  cursor: pointer;
+}
+
+.headMenuItem:hover {
+  color: black;
+  cursor: pointer;
+  background-color: rgba(34, 36, 38, 0.15);
+}
+
+.activate {
+  background-color: rgba(34, 36, 38, 0.15);
+}
+
+.ui.menu .item .activate {
   background-color: rgba(34, 36, 38, 0.15);
 }
 

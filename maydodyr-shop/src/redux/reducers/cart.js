@@ -2,9 +2,9 @@ import { ADD_ITEM, REMOVE_ITEM, LOAD_ITEMS } from "../actions/cart";
 
 const initialState = {
   items: [],
-  isItemsReady:false,
+  isItemsReady: false,
   itemsId: [],
-  isItemsIdReady:false
+  isItemsIdReady: false,
 };
 
 function cartReducer(state = initialState, action) {
@@ -13,19 +13,19 @@ function cartReducer(state = initialState, action) {
       return {
         ...state,
         itemsId: action.itemId,
-        isItemsIdReady: true
+        isItemsIdReady: true,
       };
     case REMOVE_ITEM:
       return {
         ...state,
         itemsId: state.itemsId.filter((el) => el !== action.itemId),
-        
+        items: state.items.filter((el) => el.id !== action.itemId),
       };
     case LOAD_ITEMS:
       return {
         ...state,
         items: action.items,
-        isItemsReady:true
+        isItemsReady: true,
       };
     default:
       return state;

@@ -1,0 +1,50 @@
+.name{
+  text-align: center;
+  margin-bottom: 2em ;
+}
+
+.itemInfoContainer {
+  margin-top: 3em;
+}
+
+.leftContainer {
+  width: 40%;
+  float: left;
+}
+
+.itemsImg {
+  margin-left: 15%;
+}
+.rightContainer {
+  width: 60%;
+  float: right;
+}
+
+.description{
+  font-size: 1.3rem;
+}
+
+
+.button {
+  margin: 0;
+  cursor: pointer;
+  width: 40%;
+  padding: 15px 5px;
+  text-transform: uppercase;
+  vertical-align: middle;
+  background: #3da35a;
+  border: none;
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgb(56,100,38);
+  transition: all 1s;
+}
+
+.button:hover {
+  box-shadow: 0 0 25px rgb(56,100,38);
+}
+
+.button:focus {
+  outline: none;
+}

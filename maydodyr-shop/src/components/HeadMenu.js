@@ -1,5 +1,6 @@
 import React from "react";
-import { Menu, Segment, Button, List, Image, Popup } from "semantic-ui-react";
+import { Menu, Segment, List, Image, Popup } from "semantic-ui-react";
+
 import "./style/HeadMenu.css";
 import isoFetch from "isomorphic-fetch";
 import { NavLink } from "react-router-dom";
@@ -7,7 +8,7 @@ import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { logout } from "../redux/actions/usersData";
 import { save_last_page, set_current_page } from "../redux/actions/catalog";
-import { load_items, add_item } from "../redux/actions/cart";
+import { load_items, remove_item } from "../redux/actions/cart";
 
 import { reloadData } from "./events";
 
@@ -15,10 +16,8 @@ class HeadMenu extends React.Component {
   state = { activeItem: "home", isCatalogMenuActive: false };
 
   componentWillUnmount() {
-    
     if (this.props.usersData.activeUser) {
       this.saveUsersCart();
-      
     }
   }
 
@@ -104,8 +103,13 @@ class HeadMenu extends React.Component {
       });
   };
 
+  deleteItemFromCart = (itemId) => {
+    console.log(itemId);
+    this.props.dispatch(remove_item(itemId));
+  };
+
   render() {
-    const { activeItem } = this.state;
+    
     const { isActiveUserAdmin, activeUser } = this.props.usersData;
     const { items, itemsId, isItemsReady, isItemsIdReady } = this.props.cart;
 
@@ -115,7 +119,7 @@ class HeadMenu extends React.Component {
           <NavLink
             to="/catalog"
             exact
-            activeClassName="activate"
+            activeClassName="activateCatalogMenuItem"
             className="catalogMenuItem"
             onClick={() => {
               this.reloadData("");
@@ -125,7 +129,7 @@ class HeadMenu extends React.Component {
           </NavLink>
           <NavLink
             to="/catalog/washing"
-            activeClassName="activate"
+            activeClassName="activateCatalogMenuItem"
             className="catalogMenuItem"
             onClick={() => {
               this.reloadData("washing");
@@ -135,7 +139,7 @@ class HeadMenu extends React.Component {
           </NavLink>
           <NavLink
             to="/catalog/cleaning"
-            activeClassName="activate"
+            activeClassName="activateCatalogMenuItem"
             className="catalogMenuItem"
             onClick={() => {
               this.reloadData("cleaning");
@@ -145,7 +149,7 @@ class HeadMenu extends React.Component {
           </NavLink>
           <NavLink
             to="/catalog/sponges"
-            activeClassName="activate"
+            activeClassName="activateCatalogMenuItem"
             className="catalogMenuItem"
             onClick={() => {
               this.reloadData("sponges");
@@ -155,7 +159,7 @@ class HeadMenu extends React.Component {
           </NavLink>
           <NavLink
             to="/catalog/napkins"
-            activeClassName="activate"
+            activeClassName="activateCatalogMenuItem"
             className="catalogMenuItem"
             onClick={() => {
               this.reloadData("napkins");
@@ -173,46 +177,64 @@ class HeadMenu extends React.Component {
             <List selection divided verticalAlign="middle">
               <List.Item>
                 <List.Content floated="right">
-                  <Image avatar src={"/delete.png"} className="deleteBut" />
+                  <Image
+                    avatar
+                    src={"/delete.png"}
+                    className="deleteBut"
+                    onClick={() => {
+                      this.deleteItemFromCart(item.id);
+                    }}
+                  />
                 </List.Content>
                 <Image avatar src={item.imgUrl} />
                 <List.Content>{item.name}</List.Content>
               </List.Item>
             </List>
           ))
-       
-          
         : "Корзина пуста";
     } else {
       cartCode = "Загрузка..";
     }
 
-    var totalCost = 0
-    
+   
+
     return (
       <div>
         <Menu secondary>
-          <Menu.Item
-            name="Домой"
-            active={activeItem === "Домой"}
-            onClick={this.handleItemClick}
+          <NavLink
+            to="/"
+            className="headMenuItem"
+            activeClassName="activate"
+            exact
           >
-            <NavLink to="/" activeClassName="activate" exact>
-              Домой
-            </NavLink>
-          </Menu.Item>
+            Домой
+          </NavLink>
 
-          <Menu.Item
-            name="Каталог товаров"
-            active={activeItem === "Каталог товаров"}
+          <div
             onClick={(EO) => {
               this.activateCatalogMenu("Каталог товаров");
             }}
-          />
+            className={
+              window.location.pathname === "/catalog" ||
+              window.location.pathname === "/catalog/washing" ||
+              window.location.pathname === "/catalog/cleaning" ||
+              window.location.pathname === "/catalog/sponges" ||
+              window.location.pathname === "/catalog/napkins"
+                ? "activate"
+                : "headMenuItem"
+            }
+          >
+            Каталог товаров
+          </div>
+
           <Menu.Menu position="right">
-            <Menu.Item>
+            <div className="headMenuItem">
               {isActiveUserAdmin ? (
-                <NavLink activeClassName="activate" to="/addItem">
+                <NavLink
+                  activeClassName="activate"
+                  className="headMenuItem"
+                  to="/addItem"
+                >
                   Добавить товар
                 </NavLink>
               ) : (
@@ -229,19 +251,22 @@ class HeadMenu extends React.Component {
                   }
                   content={cartCode}
                   on="click"
-                  hideOnScroll
                 />
               )}
-            </Menu.Item>
-            <Menu.Item
-              name="Войти"
-              active={activeItem === "Войти"}
+            </div>
+
+            <p
               onClick={() => {
                 this.userData(activeUser, "Войти");
               }}
+              className={
+                window.location.pathname === "/login"
+                  ? "activate"
+                  : "headMenuItem"
+              }
             >
               {activeUser ? "Выйти" : "Войти"}
-            </Menu.Item>
+            </p>
           </Menu.Menu>
         </Menu>
         {this.state.isCatalogMenuActive && catalogMenu}

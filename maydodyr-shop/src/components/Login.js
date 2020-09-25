@@ -11,8 +11,8 @@ import {  add_item } from "../redux/actions/cart";
 class Login extends React.PureComponent {
   state = {
     isFormStateRegister: false, //false-login true-register
-    loginValue: "",
-    passwordValue: "",
+    loginValue: 'admin',
+    passwordValue: 'iamadmin',
     checkDataStatus: true,
     //register
     loginRegisterValue: "",

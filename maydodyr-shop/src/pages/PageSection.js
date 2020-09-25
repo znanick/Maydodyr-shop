@@ -9,7 +9,6 @@ class PageSection extends React.PureComponent {
   
 
   render() {
-    console.log("page section render");
     if (this.props.match.params.section !== this.props.sort.section)
       this.props.dispatch(set_section(this.props.match.params.section));
 

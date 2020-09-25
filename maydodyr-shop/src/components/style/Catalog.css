@@ -1,3 +1,25 @@
-.selectPagination{
-  font-weight: 700;
+.paginationList {
+  
+  display: inline-block;
+  
+}
+
+.selectPagination, .pagination {
+  font-size: 1.2rem;
+  color: black;
+  float: left;  
+  padding: 1em 2em;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.selectPagination {
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 5px;
+}
+
+.pagination:hover{
+  background-color: rgba(34, 36, 38, 0.15);
+  border-radius: 5px;
 }

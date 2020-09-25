@@ -3,14 +3,19 @@ import { Item } from "semantic-ui-react";
 import { NavLink } from "react-router-dom";
 import "./style/ItemComponent.css";
 import { connect } from "react-redux";
+import { withRouter } from "react-router";
 
 import { add_item } from "../redux/actions/cart";
 
 class ItemComponent extends React.PureComponent {
   addToCart = (itemId) => {
-    var newItemsId = [...this.props.cart.itemsId];
-    newItemsId.push(itemId);
-    this.props.dispatch(add_item(newItemsId));
+    if (this.props.usersData.activeUser) {
+      var newItemsId = [...this.props.cart.itemsId];
+      newItemsId.push(itemId);
+      this.props.dispatch(add_item(newItemsId));
+    } else {
+      this.props.history.push("/login");
+    }
   };
 
   render() {
@@ -44,7 +49,8 @@ class ItemComponent extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => ({
+  usersData: state.usersData,
   cart: state.cart,
 });
 
-export default connect(mapStateToProps)(ItemComponent);
+export default connect(mapStateToProps)(withRouter(ItemComponent));
