@@ -4,18 +4,11 @@ import { withRouter } from "react-router";
 
 import "./style/itemInfo.css";
 
-import { add_item } from "../redux/actions/cart";
+
+import {  addToCart } from "./events";
 
 class ItemInfo extends React.PureComponent {
-  addToCart = (itemId) => {
-    if (this.props.usersData.activeUser) {
-      var newItemsId = [...this.props.cart.itemsId];
-      newItemsId.push(itemId);
-      this.props.dispatch(add_item(newItemsId));
-    } else {
-      this.props.history.push("/login");
-    }
-  };
+  
   render() {
     const { info } = this.props;
     return (
@@ -30,7 +23,10 @@ class ItemInfo extends React.PureComponent {
           <button
             className="button"
             onClick={() => {
-              this.addToCart(info.id);
+              addToCart.emit(
+                "addToCart",
+                info.id
+              );
             }}
           >
             {" "}

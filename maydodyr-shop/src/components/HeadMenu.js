@@ -8,18 +8,35 @@ import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { logout } from "../redux/actions/usersData";
 import { save_last_page, set_current_page } from "../redux/actions/catalog";
-import { load_items, remove_item } from "../redux/actions/cart";
+import { load_items, remove_item, add_item } from "../redux/actions/cart";
 
-import { reloadData } from "./events";
+import { reloadData, addToCart } from "./events";
 
 class HeadMenu extends React.Component {
   state = { activeItem: "home", isCatalogMenuActive: false };
+
+  componentDidMount() {
+    addToCart.addListener("addToCart", this.addToCart);
+  }
 
   componentWillUnmount() {
     if (this.props.usersData.activeUser) {
       this.saveUsersCart();
     }
+    addToCart.removeListener("addToCart", this.addToCart);
   }
+
+  addToCart = (itemId) => {
+    if (this.props.usersData.isActiveUserAdmin) {
+      alert("Вы администратор!");
+    } else if (this.props.usersData.activeUser) {
+      var newItemsId = [...this.props.cart.itemsId];
+      newItemsId.push(itemId);
+      this.props.dispatch(add_item(newItemsId));
+    } else {
+      this.props.history.push("/login");
+    }
+  };
 
   saveUsersCart = () => {
     var newData = {
@@ -109,7 +126,6 @@ class HeadMenu extends React.Component {
   };
 
   render() {
-    
     const { isActiveUserAdmin, activeUser } = this.props.usersData;
     const { items, itemsId, isItemsReady, isItemsIdReady } = this.props.cart;
 
@@ -195,8 +211,6 @@ class HeadMenu extends React.Component {
     } else {
       cartCode = "Загрузка..";
     }
-
-   
 
     return (
       <div>

@@ -64,8 +64,8 @@ class MainPage extends React.PureComponent {
               <td>
                 {" "}
                 Проект собирается автоматически. В связи с отсуствием back-end
-                части потребуется создать фейк=сервер командой <br />
-                <b>json-server --watch public/db.json --port 3004</b>
+                части потребуется запустить фейк-сервер командой <br />
+                <b>npm run server</b>
                 <br />
                 prod-сборка делается командой <br />
                 <b>npm run build</b>
