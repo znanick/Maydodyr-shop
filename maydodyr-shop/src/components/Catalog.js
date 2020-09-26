@@ -13,32 +13,28 @@ import {
   set_length,
 } from "../redux/actions/catalog";
 
+import { set_section } from "../redux/actions/sort";
+
 import ItemComponent from "./ItemComponent";
 import Sort from "./Sort";
 
 class Catalog extends React.PureComponent {
   componentDidMount() {
-    
     this.loadData();
-    window.addEventListener(
-      "popstate",
-      this.loadData,
-      false
-    );
+    window.addEventListener("popstate", this.loadData, false);
     reloadData.addListener("reloadData", this.loadData);
   }
 
   componentWillUnmount() {
     console.log("");
-    window.removeEventListener(
-      "popstate",
-      this.loadData,
-      false
-    );
+    window.removeEventListener("popstate", this.loadData, false);
     reloadData.removeListener("reloadData", this.loadData);
   }
 
-  
+  componentDidUpdate() {
+    
+    
+  }
 
   loadData = (
     filterBy = this.props.sort.filterBy,
@@ -46,9 +42,7 @@ class Catalog extends React.PureComponent {
     pageNumber = this.props.itemsCatalog.currentPage,
     section = this.props.sort.section
   ) => {
-    let newSection = section
-      ? "section=" + section
-      : "";
+    let newSection = section ? "section=" + section : "";
 
     var filter = "";
     if (filterBy !== "all") {
@@ -143,7 +137,7 @@ class Catalog extends React.PureComponent {
       pagination.push(
         <span
           key={i}
-          className={currentPage === i ? "selectPagination" : 'pagination'}
+          className={currentPage === i ? "selectPagination" : "pagination"}
           onClick={() => {
             this.onPageChange(i);
           }}
@@ -166,9 +160,7 @@ class Catalog extends React.PureComponent {
             activeSection="all"
             cbLoadData={this.loadData}
           />
-          <div className='paginationList'>
-          {pagination}
-          </div>
+          <div className="paginationList">{pagination}</div>
           {code.length === 0 ? "Ничего не найдено" : code}
         </Item.Group>
       </Container>

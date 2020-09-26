@@ -6,16 +6,20 @@ import { set_section } from "../redux/actions/sort";
 
 class PageSection extends React.PureComponent {
   componentDidMount() {
-    if (this.props.match.params.section !== this.props.sort.section)
-      this.props.dispatch(set_section(this.props.match.params.section));
+    this.checkSection();
   }
 
+  componentDidUpdate() {
+    this.checkSection();
+  }
+
+  checkSection = () => {
+    if (this.props.match.params.section !== this.props.sort.section)
+      this.props.dispatch(set_section(this.props.match.params.section));
+  };
+
   render() {
-    return (
-      <div>
-        <Catalog />
-      </div>
-    );
+    return <div>{this.props.sort.isSectionReady && <Catalog />}</div>;
   }
 }
 

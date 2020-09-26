@@ -17,7 +17,18 @@ class HeadMenu extends React.Component {
 
   componentDidMount() {
     addToCart.addListener("addToCart", this.addToCart);
+    if (
+      window.location.pathname === "/catalog" ||
+      window.location.pathname === "/catalog/washing" ||
+      window.location.pathname === "/catalog/cleaning" ||
+      window.location.pathname === "/catalog/sponges" ||
+      window.location.pathname === "/catalog/napkins"
+    ) {
+      this.setState({ isCatalogMenuActive: true });
+    }
   }
+
+  
 
   componentWillUnmount() {
     if (this.props.usersData.activeUser) {
@@ -70,6 +81,7 @@ class HeadMenu extends React.Component {
       this.saveUsersCart();
       this.props.dispatch(logout());
     } else if (!isUserLogin) {
+      this.hideSelectors()
       this.props.dispatch(save_last_page(this.props.location.pathname));
       this.setState({
         activeItem: name,
@@ -124,6 +136,18 @@ class HeadMenu extends React.Component {
     console.log(itemId);
     this.props.dispatch(remove_item(itemId));
   };
+
+  hideSelectors = () =>{
+    if (
+      window.location.pathname === "/catalog" ||
+      window.location.pathname === "/catalog/washing" ||
+      window.location.pathname === "/catalog/cleaning" ||
+      window.location.pathname === "/catalog/sponges" ||
+      window.location.pathname === "/catalog/napkins"
+    ) {
+      this.setState({ isCatalogMenuActive: false });
+    }
+  }
 
   render() {
     const { isActiveUserAdmin, activeUser } = this.props.usersData;
@@ -190,7 +214,7 @@ class HeadMenu extends React.Component {
     if (isItemsReady && isItemsIdReady) {
       cartCode = items.length
         ? items.map((item) => (
-            <List selection divided verticalAlign="middle">
+            <List selection divided verticalAlign="middle" key={item.id}>
               <List.Item>
                 <List.Content floated="right">
                   <Image
@@ -219,6 +243,7 @@ class HeadMenu extends React.Component {
             to="/"
             className="headMenuItem"
             activeClassName="activate"
+            onClick = {this.hideSelectors}
             exact
           >
             Домой
@@ -246,6 +271,7 @@ class HeadMenu extends React.Component {
               {isActiveUserAdmin ? (
                 <NavLink
                   activeClassName="activate"
+                  onClick = {this.hideSelectors}
                   className="headMenuItem"
                   to="/addItem"
                 >

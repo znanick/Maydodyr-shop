@@ -4,6 +4,7 @@ const initialState = {
   searchQuery: "",
   filterBy: "all",
   section: "",
+  isSectionReady: false
 };
 
 function sortReducer(state = initialState, action) {
@@ -22,6 +23,7 @@ function sortReducer(state = initialState, action) {
       return {
         ...state,
         section: action.section,
+        isSectionReady: true
       };
     default:
       return state;
